@@ -32,18 +32,18 @@ if save_to_file: fid= open(file_name,'a',0)
 
 @app.route('/', methods=['GET', 'POST'])
 def parse_request():
-    if save_to_file: fid.write(strftime("%Y-%m-%d %H:%M:%S", localtime())  )
+    if save_to_file: fid.write(strftime("%Y-%m-%d %H:%M:%S", localtime())+'\n'  )
     data = request.data.decode('utf-8')  # data is empty
     data_js = json.loads(request.data.decode('utf-8'))
     c=''
     column=u'：'
     next_line=u'\n'
     #if save_to_file: fid.write(data)  # not working
-    if save_to_file: fid.write(str(data_js)+'\n')
+    if save_to_file: fid.write(str(data_js).encode('utf-8')+'\n')
 
     for tt1 in tit['title']:
         print tt1
-        if (tt1 in tit['type']) and tit['display'][tt1]=="True":
+        if (tt1 in data_js['data']) and tit['display'][tt1]=="True":
             if tit['type'][tt1]==u'string':
                 c+=tit['title'][tt1]+column+data_js['data'][tt1]+next_line
             if tit['type'][tt1]==u'number':
@@ -57,11 +57,15 @@ def parse_request():
                     data_js['data'][tt1]=0
                     pass
                 c+=tit['title'][tt1]+column+str(data_js['data'][tt1])+next_line
+            if tit['type'][tt1]==u'json':
+                if tt1==u'_widget_1521767708321' :
+                    c+=tit['title'][tt1] +column+ data_js['data'][tt1]['name'] + next_line 
             #print c
 
     payload_simple = '{"msgtype": "text", "text": { "content":"'+  c.encode('utf-8')+'" }}'
     print payload_simple
-    if save_to_file: fid.write(payload_simple)
+    #if save_to_file: fid.write(payload_simple+next_line)
+    if save_to_file: fid.write(payload_simple+'\n')
     headers = {'content-type': 'application/json;charset=utf-8', 'Accept-Charset': 'UTF-8'}
     r= requests.post(sales_list, data=payload_simple, headers=headers)
     return 'success'
