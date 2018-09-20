@@ -13,13 +13,15 @@ import pdb
 import subprocess
 import requests
 from time import sleep,gmtime, strftime,localtime
+from collections import OrderedDict
 
 pool = PooledDB(pymysql, 5, host='localhost', user='root', passwd='', db='webhook', port=3306, charset='utf8')
 
 app = Flask(__name__)
 
 with open('title_parse.json') as f:
-        tit = json.load(f)
+        tit = json.load(f, object_pairs_hook=OrderedDict)
+        #tit = json.load(f)
 
 with open('/home/yyh/webhook-demo-python/pass/sales_list', 'r') as myfile:
     sales_list=myfile.read().replace('\n', '')
