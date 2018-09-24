@@ -64,12 +64,24 @@ def parse_request():
                     c+=tit['title'][tt1] +column+ data_js['data'][tt1]['name'] + next_line 
             #print c
 
+    sw_exclusion=False
+    for subset in tit['exclusion']:
+       #if all(item in data_js['data'].items() for item in subset.items()):
+       if all(item in data_js['data'].items() for item in tit['exclusion'][subset].items()):
+           sw_exclusion=True
+           break
+       
+
     payload_simple = '{"msgtype": "text", "text": { "content":"'+  c.encode('utf-8')+'" }}'
     print payload_simple
     #if save_to_file: fid.write(payload_simple+next_line)
     if save_to_file: fid.write(payload_simple+'\n')
     headers = {'content-type': 'application/json;charset=utf-8', 'Accept-Charset': 'UTF-8'}
-    r= requests.post(sales_list, data=payload_simple, headers=headers)
+    
+
+    if sw_exclusion==False:
+        r= requests.post(sales_list, data=payload_simple, headers=headers)
+
     return 'success'
 
 
