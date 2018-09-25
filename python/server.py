@@ -21,11 +21,9 @@ app = Flask(__name__)
 
 with open('title_parse.json') as f:
         tit = json.load(f, object_pairs_hook=OrderedDict)
-        #tit = json.load(f)
 
-with open('/home/yyh/webhook-demo-python/pass/sales_list', 'r') as myfile:
-    sales_list=myfile.read().replace('\n', '')
-
+with open('/home/yyh/pyding/credential/sales_list.json', 'r') as f:
+        sales_list = json.load(f)
 
 save_to_file=True
 
@@ -40,6 +38,7 @@ def parse_request():
     c=''
     column=u'：'
     next_line=u'\n'
+    c+=tit['header']+next_line
     #if save_to_file: fid.write(data)  # not working
     if save_to_file: fid.write(str(data_js).encode('utf-8')+'\n')
 
@@ -47,7 +46,7 @@ def parse_request():
         print tt1
         if (tt1 in data_js['data']) and tit['display'][tt1]=="True":
             if tit['type'][tt1]==u'string':
-                c+=tit['title'][tt1]+column+data_js['data'][tt1]+next_line
+                c+=tit['title'][tt1]+column+data_js['data'][tt1]+tit['suffix'][tt1]+next_line
             if tit['type'][tt1]==u'number':
                 print tt1 +'is number'
                 try:
@@ -58,15 +57,14 @@ def parse_request():
                     print 'can not pass data_jsdatatt1'
                     data_js['data'][tt1]=0
                     pass
-                c+=tit['title'][tt1]+column+str(data_js['data'][tt1])+next_line
+                c+=tit['title'][tt1]+column+str(data_js['data'][tt1])+tit['suffix'][tt1]+next_line
             if tit['type'][tt1]==u'json':
                 if tt1==u'_widget_1521767708321' :
-                    c+=tit['title'][tt1] +column+ data_js['data'][tt1]['name'] + next_line 
-            #print c
+                    c+=tit['title'][tt1] +column+ data_js['data'][tt1]['name']+tit['suffix'][tt1] + next_line 
+    c+=tit['footer']
 
     sw_exclusion=False
     for subset in tit['exclusion']:
-       #if all(item in data_js['data'].items() for item in subset.items()):
        if all(item in data_js['data'].items() for item in tit['exclusion'][subset].items()):
            sw_exclusion=True
            break
@@ -80,7 +78,9 @@ def parse_request():
     
 
     if sw_exclusion==False:
-        r= requests.post(sales_list, data=payload_simple, headers=headers)
+        for push_addr in sales_list["pushgroup"]:
+            r= requests.post(sales_list["pushgroup"][push_addr], data=payload_simple, headers=headers)
+            sleep(0.2)
 
     return 'success'
 
