@@ -22,12 +22,12 @@ app = Flask(__name__)
 with open('title_parse.json') as f:
         tit = json.load(f, object_pairs_hook=OrderedDict)
 
-with open('/home/yyh/pyding/credential/sales_list.json', 'r') as f:
+with open('sales_list.json', 'r') as f:
         sales_list = json.load(f)
 
 save_to_file=True
 
-file_name= '../data/pizo.csv'
+file_name= 'pizo.csv'
 if save_to_file: fid= open(file_name,'a',0)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -87,4 +87,4 @@ def parse_request():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3101)
+    app.run(host='0.0.0.0', port=tit['port'])

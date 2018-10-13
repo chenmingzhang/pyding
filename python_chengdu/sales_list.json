@@ -1,0 +1,10 @@
+{
+    "pushgroup":{
+        "research": "https://oapi.dingtalk.com/robot/send?access_token=48b403f4da8c65ef9f5fb00162e2bb7c95ac305c2ead55cef5cbbf52cc3a8b11"
+           },
+    "notpushgroup":{
+        "biggroup": "https://oapi.dingtalk.com/robot/send?access_token=48b403f4da8c65ef9f5fb00162e2bb7c95ac305c2ead55cef5cbbf52cc3a8b11",
+        "biggroup2": "https://oapi.dingtalk.com/robot/send?access_token=48b403f4da8c65ef9f5fb00162e2bb7c95ac305c2ead55cef5cbbf52cc3a8b11",
+        "research2": ""
+           }
+}
